@@ -1,0 +1,34 @@
+/*
+ * Code formatter project
+ * CS 4481
+ */
+package submit.ast;
+
+import submit.MIPSResult;
+import submit.RegisterAllocator;
+import submit.SymbolTable;
+
+/**
+ *
+ * @author edwajohn
+ */
+public class StringConstant extends Expression {
+
+  private final String value;
+
+  public StringConstant(String value) {
+    this.value = value;
+  }
+
+  @Override
+  public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
+    String addressLabel = symbolTable.getUniqueLabel();
+    data.append(addressLabel + ": .asciiz " + value);
+    return MIPSResult.createAddressResult(addressLabel, VarType.CHAR);
+  }
+
+  public void toCminus(StringBuilder builder, final String prefix) {
+    builder.append("\"").append(value).append("\"");
+  }
+
+}
