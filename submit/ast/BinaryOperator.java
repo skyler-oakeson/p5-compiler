@@ -4,6 +4,10 @@
  */
 package submit.ast;
 
+import submit.MIPSResult;
+import submit.RegisterAllocator;
+import submit.SymbolTable;
+
 /**
  *
  * @author edwajohn
@@ -32,4 +36,24 @@ public class BinaryOperator extends Expression {
     rhs.toCminus(builder, prefix);
   }
 
+  @Override
+  public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
+    switch (type) {
+      case EQ:
+      case LE:
+      case LT:
+      case GE:
+      case GT:
+      case NE:
+      case OR:
+      case AND:
+      case MOD:
+      case PLUS:
+      case MINUS:
+      case TIMES:
+      case DIVIDE:
+      default:
+    }
+    return super.toMIPS(code, data, symbolTable, regAllocator);
+  }
 }

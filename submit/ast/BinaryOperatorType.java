@@ -33,5 +33,4 @@ public enum BinaryOperatorType {
   public String toString() {
     return value;
   }
-
 }

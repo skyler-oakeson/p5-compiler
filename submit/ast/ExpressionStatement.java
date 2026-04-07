@@ -29,7 +29,6 @@ public class ExpressionStatement extends Statement {
 
   @Override
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
-    expression.toMIPS(code, data, symbolTable, regAllocator);
-    return super.toMIPS(code, data, symbolTable, regAllocator);
+    return expression.toMIPS(code, data, symbolTable, regAllocator);
   }
 }

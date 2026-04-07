@@ -27,8 +27,8 @@ public class SymbolTable {
     children = new ArrayList<>();
 
     // Builtin functions
-    this.addSymbol("println", new SymbolInfo("println", null, true));
-    this.addSymbol("return", new SymbolInfo("return", null, true));
+    addSymbol("println", new SymbolInfo("println", null, true));
+    addSymbol("return", new SymbolInfo("return", null, true));
   }
 
   public void addSymbol(String id, SymbolInfo symbol) {
@@ -68,15 +68,11 @@ public class SymbolTable {
     return parent;
   }
 
-  public String toString() {
+  public String toString(String prefix) {
 
     StringBuilder sb = new StringBuilder();
     for (String name: table.keySet()) {
-      sb.append(name + ": " + table.get(name).toString() + "\n");
-    }
-
-    for (SymbolTable child: children) {
-      sb.append(child.toString());
+      sb.append(prefix == null ? "" : prefix + name + "\n");
     }
 
     return sb.toString();

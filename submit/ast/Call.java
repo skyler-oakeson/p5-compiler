@@ -41,18 +41,40 @@ public class Call extends Expression {
 
   @Override
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
-    // update stack pointer for function call
-    code.append("addi $sp $sp -0");
-
     // special case for println rn
     if (id.equals("println")) {
-      for (Expression arg: args) {
-        MIPSResult addr = arg.toMIPS(code, data, symbolTable, regAllocator);
-        code.append("la $a0 " + addr);
-      }
+      return println(code, data, symbolTable, regAllocator);
+    }
 
+    code.append("# -- update the stack pointer --\n");
+    code.append("addi $sp $sp -0\n");
+
+    return MIPSResult.createVoidResult();
+  }
+
+  public MIPSResult println(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
+    // ERROR HERE TOO MANY ARGS TO PRINTLN
+    if (args.size() > 1) {
       return MIPSResult.createVoidResult();
     }
+
+    // TODO: There is for sure a better way to do this
+    if (data.indexOf("newline") == -1) {
+      data.append("newline: .asciiz \"\\n\"\n");
+    }
+
+    Expression arg = args.get(0);
+
+    MIPSResult addr = arg.toMIPS(code, data, symbolTable, regAllocator);
+    code.append("la $a0 " + addr.getAddress() + "\n");
+
+    // print value
+    code.append("li $v0 4\n");
+    code.append("syscall\n");
+
+    // print newline
+    code.append("la $a0 newline\n");
+    code.append("syscall\n");
 
     return MIPSResult.createVoidResult();
   }

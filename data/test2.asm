@@ -9,15 +9,37 @@ j main
 main:
 # -- entering a new scope --
 # -- symbols in table --
-# println: <println, null>
-# main: <main, null>
-# return: <return, null>
-# println: <println, null>
-# return: <return, null>
-addi $sp $sp -0
-# -- update the stack pointer --
+# println
+# main
+# return
 addi $sp $sp -0
 la $a0 datalabel0
+li $v0 4
+syscall
+la $a0 newline
+syscall
+li $t0 7
+la $a0 null
+li $v0 4
+syscall
+la $a0 newline
+syscall
+la $a0 null
+li $v0 4
+syscall
+la $a0 newline
+syscall
+la $a0 null
+li $v0 4
+syscall
+la $a0 newline
+syscall
+la $a0 null
+li $v0 4
+syscall
+la $a0 newline
+syscall
+la $a0 null
 li $v0 4
 syscall
 la $a0 newline
@@ -33,4 +55,4 @@ syscall
 .data
 
 newline: .asciiz "\n"
-datalabel0: .asciiz "Hello world"
+datalabel0: .asciiz "This program prints 7 7 7 7 7 (separated by newlines)"

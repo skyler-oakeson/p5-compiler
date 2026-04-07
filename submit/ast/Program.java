@@ -42,6 +42,11 @@ public class Program extends Node {
     for (Declaration decl: declarations) {
       decl.toMIPS(code, data, symbolTable, regAllocator);
     }
+
+    // exit the program
+    code.append("# -- exiting program -- \n");
+    code.append("li $v0 10\n");
+    code.append("syscall\n");
     return MIPSResult.createVoidResult();
   }
 }

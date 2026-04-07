@@ -35,11 +35,18 @@ public class CompoundStatement extends Statement {
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
     code.append("# -- entering a new scope --\n");
     code.append("# -- symbols in table --\n");
-    code.append(symbolTable.toString());
+    code.append(symbolTable.toString("# "));
+
+    // update stack pointer
+    code.append("addi $sp $sp -0\n");
+
     for (Statement s: statements) {
       s.toMIPS(code, data, symbolTable, regAllocator);
     }
-    code.append("\n# -- exiting scope --");
+
+    // reset stack pointer
+    code.append("# -- exiting scope --\n");
+    code.append("addi $sp $sp 0\n");
     return super.toMIPS(code, data, symbolTable, regAllocator);
   }
 }
