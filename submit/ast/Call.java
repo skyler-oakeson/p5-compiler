@@ -65,16 +65,41 @@ public class Call extends Expression {
 
     Expression arg = args.get(0);
 
-    MIPSResult addr = arg.toMIPS(code, data, symbolTable, regAllocator);
-    code.append("la $a0 " + addr.getAddress() + "\n");
+    MIPSResult res = arg.toMIPS(code, data, symbolTable, regAllocator);
+    if (res.getAddress() != null) {
+      code.append("la $a0 " + res.getAddress() + "\n");
+      code.append("li $v0 4\n");
+    } else if (res.getRegister() != null) {
+      code.append("move $a0 " + res.getRegister() + "\n");
+    }
 
-    // print value
-    code.append("li $v0 4\n");
+    // |-------------------------------------------|
+    // | $v0 | function       | argument           |
+    // |-------------------------------------------|
+    // | 1   | print int       | $a0 = int         |
+    // | 4   | print string    | $a0 = int         |
+    // | 5   | read integer    | return val in $v0 |
+    // | 10  | exit program    | none              |
+    // | 11  | print character | none              |
+    // |-------------------------------------------|
+
+    if (res.getType() == VarType.INT) {
+      code.append("li $v0 1\n");
+    } else if (res.getType() == VarType.CHAR) {
+      code.append("li $v0 11\n");
+    } else if (res.getType() == VarType.BOOL) {
+      code.append("li $v0 1\n");
+    }
+
+    // need to check the type if string 4 if int 1 in $v0
     code.append("syscall\n");
 
     // print newline
     code.append("la $a0 newline\n");
+    code.append("li $v0 4\n");
     code.append("syscall\n");
+
+    regAllocator.clearAll();
 
     return MIPSResult.createVoidResult();
   }

@@ -38,20 +38,43 @@ public class BinaryOperator extends Expression {
 
   @Override
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
+    MIPSResult lhsMIPS = lhs.toMIPS(code, data, symbolTable, regAllocator);
+    MIPSResult rhsMIPS = rhs.toMIPS(code, data, symbolTable, regAllocator);
     switch (type) {
       case EQ:
+        return super.toMIPS(code, data, symbolTable, regAllocator);
       case LE:
+        return super.toMIPS(code, data, symbolTable, regAllocator);
       case LT:
+        return super.toMIPS(code, data, symbolTable, regAllocator);
       case GE:
+        return super.toMIPS(code, data, symbolTable, regAllocator);
       case GT:
+        return super.toMIPS(code, data, symbolTable, regAllocator);
       case NE:
+        return super.toMIPS(code, data, symbolTable, regAllocator);
       case OR:
+        return super.toMIPS(code, data, symbolTable, regAllocator);
       case AND:
+        return super.toMIPS(code, data, symbolTable, regAllocator);
       case MOD:
+        return super.toMIPS(code, data, symbolTable, regAllocator);
       case PLUS:
+        code.append("add " + lhsMIPS.getRegister() + " " + lhsMIPS.getRegister() + " " + rhsMIPS.getRegister() + "\n");
+        return MIPSResult.createRegisterResult(lhsMIPS.getRegister(), VarType.INT);
       case MINUS:
+        code.append("sub " + lhsMIPS.getRegister() + " " + lhsMIPS.getRegister() + " " + rhsMIPS.getRegister() + "\n");
+        return MIPSResult.createRegisterResult(lhsMIPS.getRegister(), VarType.INT);
       case TIMES:
+        // only supports the 32 least significant bits
+        code.append("mult " + lhsMIPS.getRegister() + " " + rhsMIPS.getRegister() + "\n");
+        code.append("mflo " + lhsMIPS.getRegister() + "\n");
+        return MIPSResult.createRegisterResult(lhsMIPS.getRegister(), VarType.INT);
       case DIVIDE:
+        // only supports the quotient
+        code.append("div " + lhsMIPS.getRegister() + " " + rhsMIPS.getRegister() + "\n");
+        code.append("mflo " + lhsMIPS.getRegister() + "\n");
+        return MIPSResult.createRegisterResult(lhsMIPS.getRegister(), VarType.INT);
       default:
     }
     return super.toMIPS(code, data, symbolTable, regAllocator);
