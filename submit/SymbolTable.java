@@ -17,22 +17,32 @@ import java.util.List;
 public class SymbolTable {
 
   private final HashMap<String, SymbolInfo> table;
+  private final HashMap<String, Integer> offsets;
   private SymbolTable parent;
   private final List<SymbolTable> children;
   private final Integer label = 0;
 
+  // size of all contained objects in bytes
+  private Integer size = 0;
+
   public SymbolTable() {
     table = new HashMap<>();
+    offsets = new HashMap<>();
     parent = null;
     children = new ArrayList<>();
 
     // Builtin functions
-    addSymbol("println", new SymbolInfo("println", null, true));
-    addSymbol("return", new SymbolInfo("return", null, true));
+    table.put("println", new SymbolInfo("println", null, true));
   }
 
   public void addSymbol(String id, SymbolInfo symbol) {
+    size += 4;
     table.put(id, symbol);
+    offsets.put(id, size);
+  }
+
+  public Integer getOffset(String id) {
+    return offsets.get(id);
   }
 
   /**
@@ -44,7 +54,8 @@ public class SymbolTable {
    */
   public SymbolInfo find(String id) {
     if (table.containsKey(id)) {
-      return table.get(id);
+      SymbolInfo entry =  table.get(id);
+      return entry;
     }
     if (parent != null) {
       return parent.find(id);
@@ -77,6 +88,8 @@ public class SymbolTable {
 
     return sb.toString();
   }
+
+  public Integer getSize() { return size; }
 
   public String getUniqueLabel() {
     return "datalabel" + this.label.toString();

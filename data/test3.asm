@@ -9,28 +9,40 @@ j main
 main:
 # -- entering a new scope --
 addi $sp $sp -0
+# -- println
 la $a0 datalabel0
 li $v0 4
-li $v0 11
 syscall
 la $a0 newline
 li $v0 4
 syscall
-li $t0 3
-sw $t0 0($t0)
+# -- assign the value of a
+li $t0 -4
+add $t0 $t0 $sp
+li $t1 3
+sw $t1 0($t0)
+# -- assign the value of b
+li $t0 -8
+add $t0 $t0 $sp
 li $t1 4
 sw $t1 0($t0)
-add null null null
+# -- println
+# -- load the value of a
+li $t1 -4
+add $t1 $t1 $sp
+lw $t0 0($t1)
+# -- load the value of b
+li $t3 -8
+add $t3 $t3 $sp
+lw $t2 0($t3)
+add $t0 $t0 $t2
+move $a0 $t0
 li $v0 1
 syscall
 la $a0 newline
 li $v0 4
 syscall
 # -- symbols in table --
-# a
-# println
-# b
-# main
 # -- exiting scope --
 addi $sp $sp 0
 # -- exiting program -- 

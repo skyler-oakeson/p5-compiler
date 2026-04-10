@@ -66,7 +66,6 @@ public class Main {
         ASTVisitor v = new ASTVisitor(LOGGER);
         Node ast = v.visitProgram(programCtx);
         SymbolTable symbolTable = v.getSymbolTable();
-        LOGGER.fine(symbolTable.toString());
 
         LOGGER.info("");
         LOGGER.info("MIPS code:");

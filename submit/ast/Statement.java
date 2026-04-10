@@ -15,5 +15,5 @@ import java.util.ArrayList;
  * @author edwajohn
  */
 public abstract class Statement extends Node {
-    public static CompoundStatement empty() { return new CompoundStatement(new ArrayList<>()); }
+    public static CompoundStatement empty() { return new CompoundStatement(new ArrayList<>(), new SymbolTable()); }
 }

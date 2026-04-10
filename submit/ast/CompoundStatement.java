@@ -17,9 +17,11 @@ import java.util.List;
 public class CompoundStatement extends Statement {
 
   private final List<Statement> statements;
+  private final SymbolTable symbolTable;
 
-  public CompoundStatement(List<Statement> statements) {
+  public CompoundStatement(List<Statement> statements, SymbolTable symbolTable) {
     this.statements = statements;
+    this.symbolTable = symbolTable;
   }
 
   @Override
@@ -34,19 +36,26 @@ public class CompoundStatement extends Statement {
   @Override
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
     code.append("# -- entering a new scope --\n");
-    code.append("# -- symbols in table --\n");
-    code.append(symbolTable.toString("# "));
+
+    Integer sp = 0;
+    while (symbolTable.getParent() != null) {
+      SymbolTable parent = symbolTable.getParent();
+      sp += parent.getSize();
+    }
 
     // update stack pointer
-    code.append("addi $sp $sp -0\n");
+    code.append("addi $sp $sp -" + sp + "\n");
 
     for (Statement s: statements) {
-      s.toMIPS(code, data, symbolTable, regAllocator);
+      s.toMIPS(code, data, this.symbolTable, regAllocator);
+      regAllocator.clearAll();
     }
+
+    code.append("# -- symbols in table --\n");
 
     // reset stack pointer
     code.append("# -- exiting scope --\n");
-    code.append("addi $sp $sp 0\n");
+    code.append("addi $sp $sp " + sp + "\n");
     return super.toMIPS(code, data, symbolTable, regAllocator);
   }
 }

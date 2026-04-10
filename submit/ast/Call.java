@@ -58,7 +58,9 @@ public class Call extends Expression {
       return MIPSResult.createVoidResult();
     }
 
-    // TODO: There is for sure a better way to do this
+    code.append("# -- println\n");
+
+    // TODO: There is for sure a better place for this
     if (data.indexOf("newline") == -1) {
       data.append("newline: .asciiz \"\\n\"\n");
     }
@@ -68,7 +70,6 @@ public class Call extends Expression {
     MIPSResult res = arg.toMIPS(code, data, symbolTable, regAllocator);
     if (res.getAddress() != null) {
       code.append("la $a0 " + res.getAddress() + "\n");
-      code.append("li $v0 4\n");
     } else if (res.getRegister() != null) {
       code.append("move $a0 " + res.getRegister() + "\n");
     }
@@ -86,7 +87,7 @@ public class Call extends Expression {
     if (res.getType() == VarType.INT) {
       code.append("li $v0 1\n");
     } else if (res.getType() == VarType.CHAR) {
-      code.append("li $v0 11\n");
+      code.append("li $v0 4\n");
     } else if (res.getType() == VarType.BOOL) {
       code.append("li $v0 1\n");
     }

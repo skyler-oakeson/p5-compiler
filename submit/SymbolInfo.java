@@ -23,6 +23,10 @@ public class SymbolInfo {
     this.function = function;
   }
 
+  public VarType getType() {
+    return this.type;
+  }
+
   @Override
   public String toString() {
     return "<" + id + ", " + type + '>';

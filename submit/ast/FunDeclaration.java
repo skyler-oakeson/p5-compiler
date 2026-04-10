@@ -49,13 +49,8 @@ public class FunDeclaration extends Declaration {
 
   @Override
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
-    List<MIPSResult> paramReg = new ArrayList<>() ;
     code.append(id + ":\n");
-    for (Param param: params) {
-      paramReg.add(param.toMIPS(code, data, symbolTable, regAllocator));
-    }
     statement.toMIPS(code, data, symbolTable, regAllocator);
-
     return super.toMIPS(code, data, symbolTable, regAllocator);
   }
 }
