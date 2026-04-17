@@ -122,5 +122,6 @@ public final class RegisterAllocator {
     public void clearAll() {
         Arrays.fill(t, false);
         Arrays.fill(s, false);
+        used.clear();
     }
 }

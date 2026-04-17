@@ -48,6 +48,8 @@ public class Assignment extends Expression {
     // complete assignment with store
     code.append(MIPS.sw(rhsReg, offset, MIPS.STACKPOINTER));
 
+    regAllocator.clearAll();
+
     return MIPSResult.createVoidResult();
   }
 }

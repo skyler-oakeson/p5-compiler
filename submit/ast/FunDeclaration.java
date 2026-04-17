@@ -53,7 +53,12 @@ public class FunDeclaration extends Declaration {
     code.append("\n\n");
     code.append(MIPS.label(id));
 
-    // prologue
+    // params
+    Integer paramsOffset = params.size() * 4;
+    for (Param param: params) {
+      MIPSResult paraRes = param.toMIPS(code, data, symbolTable, regAllocator);
+    }
+
     MIPSResult stmtMIPS = statement.toMIPS(code, data, symbolTable, regAllocator);
 
     // special function that terminates the program when finished
