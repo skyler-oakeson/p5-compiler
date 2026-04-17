@@ -6,6 +6,8 @@
 .globl	main
 
 j main
+
+
 main:
 # -- enter scope
 addi $sp, $sp -8
@@ -53,19 +55,19 @@ addi $sp, $sp -4
 # println: null
 # b: 0
 # -- assigns b
-li $t0 9
-sw $t0, 0($sp)
+li $t5 9
+sw $t5, 0($sp)
 # -- assigns a
-li $t1 2
-neg $t1 $t1
-sw $t1, 4($sp)
+li $t6 2
+neg $t6 $t6
+sw $t6, 4($sp)
 # -- println
 # -- loads a
-lw $t2, 4($sp)
+lw $t7, 4($sp)
 # -- loads b
-lw $t3, 0($sp)
-add $t2, $t2 $t3
-move $a0, $t2
+lw $t8, 0($sp)
+add $t7, $t7 $t8
+move $a0, $t7
 li $v0, 1
 li $v0, 1
 syscall

@@ -50,7 +50,17 @@ public class FunDeclaration extends Declaration {
 
   @Override
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
+    code.append("\n\n");
     code.append(MIPS.label(id));
-    return statement.toMIPS(code, data, symbolTable, regAllocator);
+
+    // prologue
+    MIPSResult stmtMIPS = statement.toMIPS(code, data, symbolTable, regAllocator);
+
+    // special function that terminates the program when finished
+    if (!id.equals("main")) {
+      code.append(MIPS.jr(MIPS.RETURNADDRESS));
+    }
+
+    return stmtMIPS;
   }
 }

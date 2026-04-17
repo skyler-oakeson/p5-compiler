@@ -44,9 +44,40 @@ public class Call extends Expression {
     // special case for println rn
     if (id.equals("println")) {
       println(code, data, symbolTable, regAllocator);
+      return MIPSResult.createVoidResult();
     }
 
-    regAllocator.clearAll();
+    Integer totalOffset = regAllocator.getUsed().size() * 4 + 4;
+    Integer offset = totalOffset;
+
+    // make space for activation record
+    code.append(MIPS.addi(MIPS.STACKPOINTER, MIPS.STACKPOINTER, -totalOffset));
+
+    // save $t0-9 registers
+    for (String reg: regAllocator.getUsed()) {
+      offset -= 4;
+      code.append(MIPS.sw(reg, offset, MIPS.STACKPOINTER));
+    }
+
+    // save $ra
+    code.append(MIPS.sw(MIPS.RETURNADDRESS, 0, MIPS.STACKPOINTER));
+
+    code.append(MIPS.jal(id));
+
+
+    // restore $t0-9 registers
+    offset = totalOffset;
+    for (String reg: regAllocator.getUsed()) {
+      offset -= 4;
+      code.append(MIPS.lw(reg, offset, MIPS.STACKPOINTER));
+    }
+
+    // restore $ra
+    code.append(MIPS.lw(MIPS.RETURNADDRESS, 0, MIPS.STACKPOINTER));
+
+    // restore stackpointer
+    code.append(MIPS.addi(MIPS.STACKPOINTER, MIPS.STACKPOINTER, totalOffset));
+
 
     return MIPSResult.createVoidResult();
   }
@@ -79,7 +110,6 @@ public class Call extends Expression {
     // |-------------------------------------------|
 
     if (res.getType() == VarType.INT) {
-      code.append(MIPS.li("$v0", 1));
       code.append(MIPS.li("$v0", 1));
     } else if (res.getType() == VarType.CHAR) {
       code.append(MIPS.li("$v0", 4));

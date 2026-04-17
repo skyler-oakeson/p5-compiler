@@ -6,6 +6,8 @@
 .globl	main
 
 j main
+
+
 main:
 # -- enter scope
 addi $sp, $sp -8
@@ -33,7 +35,6 @@ lw $t2, 0($sp)
 lw $t3, 4($sp)
 add $t2, $t2 $t3
 move $a0, $t2
-li $v0, 1
 li $v0, 1
 syscall
 la $a0 newline

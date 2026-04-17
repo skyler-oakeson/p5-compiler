@@ -2,6 +2,8 @@ package submit;
 
 public  class MIPS {
     public static final String STACKPOINTER = "$sp";
+    public static final String RETURNADDRESS = "$ra";
+    public static final String PROGRAMCOUNTER = "$pc";
 
     public static String li(String targetReg, Integer val) {
         return String.format("li %s, %d\n", targetReg, val);
@@ -61,6 +63,14 @@ public  class MIPS {
 
     public static String neg(String targetReg, String sourceReg) {
         return String.format("neg %s %s\n", targetReg, sourceReg);
+    }
+
+    public static String jal(String label) {
+        return String.format("jal %s\n", label);
+    }
+
+    public static String jr(String targetReg) {
+        return String.format("jr %s\n", targetReg);
     }
 
 }

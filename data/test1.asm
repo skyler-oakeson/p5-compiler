@@ -6,26 +6,24 @@
 .globl	main
 
 j main
+
+
 main:
-# -- entering a new scope --
-# -- symbols in table --
-# println: <println, null>
-# main: <main, null>
-# return: <return, null>
-# println: <println, null>
-# return: <return, null>
-addi $sp $sp -0
-# -- update the stack pointer --
-addi $sp $sp -0
+# -- enter scope
+addi $sp, $sp 0
+# -- symbols in scope
+# println: null
+# -- println
 la $a0 datalabel0
-li $v0 4
+li $v0, 4
 syscall
 la $a0 newline
+li $v0, 4
 syscall
-# -- exiting scope --
-addi $sp $sp 0
+addi $sp, $sp 0
+# -- exit scope
 # -- exiting program -- 
-li $v0 10
+li $v0, 10
 syscall
 
 # All memory structures are placed after the
