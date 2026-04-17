@@ -4,6 +4,7 @@
  */
 package submit.ast;
 
+import submit.MIPS;
 import submit.MIPSResult;
 import submit.RegisterAllocator;
 import submit.SymbolTable;
@@ -45,8 +46,7 @@ public class Program extends Node {
 
     // exit the program
     code.append("# -- exiting program -- \n");
-    code.append("li $v0 10\n");
-    code.append("syscall\n");
+    code.append(MIPS.li("$v0", 10)).append(MIPS.syscall());
     return MIPSResult.createVoidResult();
   }
 }

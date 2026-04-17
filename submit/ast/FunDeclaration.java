@@ -5,6 +5,7 @@
 package submit.ast;
 
 import submit.MIPSResult;
+import submit.MIPS;
 import submit.RegisterAllocator;
 import submit.SymbolTable;
 
@@ -49,8 +50,7 @@ public class FunDeclaration extends Declaration {
 
   @Override
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
-    code.append(id + ":\n");
-    statement.toMIPS(code, data, symbolTable, regAllocator);
-    return super.toMIPS(code, data, symbolTable, regAllocator);
+    code.append(MIPS.label(id));
+    return statement.toMIPS(code, data, symbolTable, regAllocator);
   }
 }

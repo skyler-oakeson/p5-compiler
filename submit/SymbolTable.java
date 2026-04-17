@@ -36,13 +36,21 @@ public class SymbolTable {
   }
 
   public void addSymbol(String id, SymbolInfo symbol) {
+    offsets.put(id, size);
     size += 4;
     table.put(id, symbol);
-    offsets.put(id, size);
   }
 
   public Integer getOffset(String id) {
-    return offsets.get(id);
+    if (table.containsKey(id)) {
+      return offsets.get(id);
+    }
+
+    if (parent != null) {
+      return size + parent.getOffset(id);
+    }
+
+    return null;
   }
 
   /**
@@ -79,11 +87,11 @@ public class SymbolTable {
     return parent;
   }
 
-  public String toString(String prefix) {
+  public String toString() {
 
     StringBuilder sb = new StringBuilder();
     for (String name: table.keySet()) {
-      sb.append(prefix == null ? "" : prefix + name + "\n");
+      sb.append("# " + name + ": " + offsets.get(name) + "\n");
     }
 
     return sb.toString();

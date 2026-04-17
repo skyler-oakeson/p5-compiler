@@ -5,12 +5,12 @@
 package submit.ast;
 
 import submit.MIPSResult;
+import submit.MIPS;
 import submit.RegisterAllocator;
 import submit.SymbolTable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  *
@@ -43,35 +43,29 @@ public class Call extends Expression {
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
     // special case for println rn
     if (id.equals("println")) {
-      return println(code, data, symbolTable, regAllocator);
+      println(code, data, symbolTable, regAllocator);
     }
 
-    code.append("# -- update the stack pointer --\n");
-    code.append("addi $sp $sp -0\n");
+    regAllocator.clearAll();
 
     return MIPSResult.createVoidResult();
   }
 
-  public MIPSResult println(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
-    // ERROR HERE TOO MANY ARGS TO PRINTLN
-    if (args.size() > 1) {
-      return MIPSResult.createVoidResult();
-    }
-
+  public void println(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
     code.append("# -- println\n");
 
     // TODO: There is for sure a better place for this
     if (data.indexOf("newline") == -1) {
-      data.append("newline: .asciiz \"\\n\"\n");
+      data.append(MIPS.dataLabel("newline", ".asciiz \"\\n\""));
     }
 
     Expression arg = args.get(0);
 
     MIPSResult res = arg.toMIPS(code, data, symbolTable, regAllocator);
     if (res.getAddress() != null) {
-      code.append("la $a0 " + res.getAddress() + "\n");
+      code.append(MIPS.la("$a0", res.getAddress()));
     } else if (res.getRegister() != null) {
-      code.append("move $a0 " + res.getRegister() + "\n");
+      code.append(MIPS.move("$a0", res.getRegister()));
     }
 
     // |-------------------------------------------|
@@ -85,23 +79,19 @@ public class Call extends Expression {
     // |-------------------------------------------|
 
     if (res.getType() == VarType.INT) {
-      code.append("li $v0 1\n");
+      code.append(MIPS.li("$v0", 1));
+      code.append(MIPS.li("$v0", 1));
     } else if (res.getType() == VarType.CHAR) {
-      code.append("li $v0 4\n");
+      code.append(MIPS.li("$v0", 4));
     } else if (res.getType() == VarType.BOOL) {
-      code.append("li $v0 1\n");
+      code.append(MIPS.li("$v0", 1));
     }
 
     // need to check the type if string 4 if int 1 in $v0
-    code.append("syscall\n");
+    code.append(MIPS.syscall());
 
     // print newline
-    code.append("la $a0 newline\n");
-    code.append("li $v0 4\n");
-    code.append("syscall\n");
-
-    regAllocator.clearAll();
-
-    return MIPSResult.createVoidResult();
+    code.append(MIPS.la("$a0", "newline"));
+    code.append(MIPS.li("$v0", 4)).append(MIPS.syscall());
   }
 }

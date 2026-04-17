@@ -4,6 +4,7 @@
  */
 package submit.ast;
 
+import submit.MIPS;
 import submit.MIPSResult;
 import submit.RegisterAllocator;
 import submit.SymbolTable;
@@ -40,6 +41,8 @@ public class BinaryOperator extends Expression {
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
     MIPSResult lhsMIPS = lhs.toMIPS(code, data, symbolTable, regAllocator);
     MIPSResult rhsMIPS = rhs.toMIPS(code, data, symbolTable, regAllocator);
+    String lhsReg = lhsMIPS.getRegister();
+    String rhsReg = rhsMIPS.getRegister();
     switch (type) {
       case EQ:
         return super.toMIPS(code, data, symbolTable, regAllocator);
@@ -60,20 +63,20 @@ public class BinaryOperator extends Expression {
       case MOD:
         return super.toMIPS(code, data, symbolTable, regAllocator);
       case PLUS:
-        code.append("add " + lhsMIPS.getRegister() + " " + lhsMIPS.getRegister() + " " + rhsMIPS.getRegister() + "\n");
-        return MIPSResult.createRegisterResult(lhsMIPS.getRegister(), VarType.INT);
+        code.append(MIPS.add(lhsReg, lhsReg, rhsReg));
+        return MIPSResult.createRegisterResult(lhsReg, VarType.INT);
       case MINUS:
-        code.append("sub " + lhsMIPS.getRegister() + " " + lhsMIPS.getRegister() + " " + rhsMIPS.getRegister() + "\n");
-        return MIPSResult.createRegisterResult(lhsMIPS.getRegister(), VarType.INT);
+        code.append(MIPS.sub(lhsReg, lhsReg, rhsReg));
+        return MIPSResult.createRegisterResult(lhsReg, VarType.INT);
       case TIMES:
         // only supports the 32 least significant bits
-        code.append("mult " + lhsMIPS.getRegister() + " " + rhsMIPS.getRegister() + "\n");
-        code.append("mflo " + lhsMIPS.getRegister() + "\n");
-        return MIPSResult.createRegisterResult(lhsMIPS.getRegister(), VarType.INT);
+        code.append(MIPS.mult(lhsReg, rhsReg));
+        code.append(MIPS.mflo(lhsReg));
+        return MIPSResult.createRegisterResult(lhsReg, VarType.INT);
       case DIVIDE:
         // only supports the quotient
-        code.append("div " + lhsMIPS.getRegister() + " " + rhsMIPS.getRegister() + "\n");
-        code.append("mflo " + lhsMIPS.getRegister() + "\n");
+        code.append(MIPS.div(lhsReg, rhsReg));
+        code.append(MIPS.mflo(lhsReg));
         return MIPSResult.createRegisterResult(lhsMIPS.getRegister(), VarType.INT);
       default:
     }

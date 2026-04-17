@@ -4,10 +4,7 @@
  */
 package submit.ast;
 
-import submit.MIPSResult;
-import submit.RegisterAllocator;
-import submit.SymbolInfo;
-import submit.SymbolTable;
+import submit.*;
 
 /**
  *
@@ -40,21 +37,16 @@ public class Assignment extends Expression {
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
     String id = mutable.getId();
 
-    code.append("# -- assign the value of " + id + "\n");
-
+    // compute the offset
     Integer offset = symbolTable.getOffset(id);
-    String offsetRegister = regAllocator.getT();
 
-    // Get id's offset from $sp from the symbol table and initialize a's address with it
-    code.append("li " + offsetRegister + " -" + offset + "\n");
-    // Add the stack pointer address to the offset
-    code.append("add " + offsetRegister + " " + offsetRegister + " $sp\n");
+    code.append("# -- assigns " + id + "\n");
 
     // compute rhs for assignment
-    MIPSResult MIPSrhs = rhs.toMIPS(code, data, symbolTable, regAllocator);
+    String rhsReg = rhs.toMIPS(code, data, symbolTable, regAllocator).getRegister();
 
     // complete assignment with store
-    code.append("sw " + MIPSrhs.getRegister() + " 0(" + offsetRegister + ")\n");
+    code.append(MIPS.sw(rhsReg, offset, MIPS.STACKPOINTER));
 
     return MIPSResult.createVoidResult();
   }

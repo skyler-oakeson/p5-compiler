@@ -7,46 +7,42 @@
 
 j main
 main:
-# -- entering a new scope --
-addi $sp $sp -0
+# -- enter scope
+addi $sp, $sp -8
+# -- symbols in scope
+# a: 0
+# println: null
+# b: 4
 # -- println
 la $a0 datalabel0
-li $v0 4
+li $v0, 4
 syscall
 la $a0 newline
-li $v0 4
+li $v0, 4
 syscall
-# -- assign the value of a
-li $t0 -4
-add $t0 $t0 $sp
-li $t1 3
-sw $t1 0($t0)
-# -- assign the value of b
-li $t0 -8
-add $t0 $t0 $sp
+# -- assigns a
+li $t0 3
+sw $t0, 0($sp)
+# -- assigns b
 li $t1 4
-sw $t1 0($t0)
+sw $t1, 4($sp)
 # -- println
-# -- load the value of a
-li $t1 -4
-add $t1 $t1 $sp
-lw $t0 0($t1)
-# -- load the value of b
-li $t3 -8
-add $t3 $t3 $sp
-lw $t2 0($t3)
-add $t0 $t0 $t2
-move $a0 $t0
-li $v0 1
+# -- loads a
+lw $t2, 0($sp)
+# -- loads b
+lw $t3, 4($sp)
+add $t2, $t2 $t3
+move $a0, $t2
+li $v0, 1
+li $v0, 1
 syscall
 la $a0 newline
-li $v0 4
+li $v0, 4
 syscall
-# -- symbols in table --
-# -- exiting scope --
-addi $sp $sp 0
+addi $sp, $sp 8
+# -- exit scope
 # -- exiting program -- 
-li $v0 10
+li $v0, 10
 syscall
 
 # All memory structures are placed after the

@@ -4,6 +4,7 @@
  */
 package submit.ast;
 
+import submit.MIPS;
 import submit.MIPSResult;
 import submit.RegisterAllocator;
 import submit.SymbolTable;
@@ -35,27 +36,24 @@ public class CompoundStatement extends Statement {
 
   @Override
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
-    code.append("# -- entering a new scope --\n");
-
-    Integer sp = 0;
-    while (symbolTable.getParent() != null) {
-      SymbolTable parent = symbolTable.getParent();
-      sp += parent.getSize();
-    }
+    Integer scopeOffset = this.symbolTable.getSize();
 
     // update stack pointer
-    code.append("addi $sp $sp -" + sp + "\n");
+    code.append("# -- enter scope\n");
+    code.append(MIPS.addi(MIPS.STACKPOINTER, MIPS.STACKPOINTER, -scopeOffset));
+
+    code.append("# -- symbols in scope\n");
+    code.append(this.symbolTable.toString());
 
     for (Statement s: statements) {
       s.toMIPS(code, data, this.symbolTable, regAllocator);
-      regAllocator.clearAll();
     }
 
-    code.append("# -- symbols in table --\n");
+    code.append(MIPS.addi(MIPS.STACKPOINTER, MIPS.STACKPOINTER, scopeOffset));
+    code.append("# -- exit scope\n");
 
-    // reset stack pointer
-    code.append("# -- exiting scope --\n");
-    code.append("addi $sp $sp " + sp + "\n");
+    regAllocator.clearAll();
+
     return super.toMIPS(code, data, symbolTable, regAllocator);
   }
 }
