@@ -39,6 +39,7 @@
               jdk25
               xspim
               qtspim
+              mars-mips
             ];
           };
         };

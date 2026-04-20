@@ -39,7 +39,7 @@ public class ASTVisitor extends CminusBaseVisitor<Node> {
         for (CminusParser.VarDeclIdContext v : ctx.varDeclId()) {
             String id = v.ID().getText();
             ids.add(id);
-            symbolTable.addSymbol(id, new SymbolInfo(id, type, false));
+            symbolTable.addSymbol(id, new SymbolInfo(id, type, false, false));
             if (v.NUMCONST() != null) {
                 arraySizes.add(Integer.parseInt(v.NUMCONST().getText()));
             } else {
@@ -56,19 +56,26 @@ public class ASTVisitor extends CminusBaseVisitor<Node> {
             returnType = getVarType(ctx.typeSpecifier());
         }
         String id = ctx.ID().getText();
+        symbolTable.addSymbol(id, new SymbolInfo(id, returnType, true, false));
+
+        symbolTable = symbolTable.createChild();
         List<Param> params = new ArrayList<>();
         for (CminusParser.ParamContext p : ctx.param()) {
             params.add((Param) visitParam(p));
         }
         Statement statement = (Statement) visitStatement(ctx.statement());
-        symbolTable.addSymbol(id, new SymbolInfo(id, returnType, true));
-        return new FunDeclaration(returnType, id, params, statement);
+
+        // have this go last every time to keep offsets consistant
+        symbolTable.addSymbol("return", new SymbolInfo("return", returnType, true, false));
+        FunDeclaration declaration = new FunDeclaration(returnType, id, params, statement, symbolTable);
+        symbolTable = symbolTable.getParent();
+        return declaration;
     }
 
     @Override public Node visitParam(CminusParser.ParamContext ctx) {
         VarType type = getVarType(ctx.typeSpecifier());
         String id = ctx.paramId().ID().getText();
-        symbolTable.addSymbol(id, new SymbolInfo(id, type, false));
+        symbolTable.addSymbol(id, new SymbolInfo(id, type, false, true));
         return new Param(type, id, ctx.paramId().children.size() > 1);
     }
 

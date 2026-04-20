@@ -1,10 +1,10 @@
 
-int add(int x, int y) {
+int addf(int x, int y) {
   return x+y;
 }
 
 int add2(int x, int y) {
-  return add(add(x,y),1);
+  return addf(addf(x,y),1);
 }
 
 void main() {

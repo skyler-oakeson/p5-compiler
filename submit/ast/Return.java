@@ -4,6 +4,11 @@
  */
 package submit.ast;
 
+import submit.MIPS;
+import submit.MIPSResult;
+import submit.RegisterAllocator;
+import submit.SymbolTable;
+
 /**
  *
  * @author edwajohn
@@ -28,4 +33,14 @@ public class Return extends Statement {
     }
   }
 
+  @Override
+  public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
+    code.append("# -- save return\n");
+    MIPSResult result = expr.toMIPS(code, data, symbolTable, regAllocator);
+    String resultReg = result.getRegister();
+    Integer offset = symbolTable.getOffset("return");
+    code.append(MIPS.sw(resultReg, offset, MIPS.STACKPOINTER));
+
+    return super.toMIPS(code, data, symbolTable, regAllocator);
+  }
 }

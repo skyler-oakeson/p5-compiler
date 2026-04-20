@@ -4,10 +4,7 @@
  */
 package submit.ast;
 
-import submit.MIPSResult;
-import submit.MIPS;
-import submit.RegisterAllocator;
-import submit.SymbolTable;
+import submit.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +19,15 @@ public class FunDeclaration extends Declaration {
   private final String id;
   private final ArrayList<Param> params;
   private final Statement statement;
+  private final SymbolTable symbolTable;
 
   public FunDeclaration(VarType returnType, String id, List<Param> params,
-          Statement statement) {
+          Statement statement, SymbolTable symbolTable) {
     this.returnType = returnType;
     this.id = id;
     this.params = new ArrayList<>(params);
     this.statement = statement;
+    this.symbolTable = symbolTable;
   }
 
   public void toCminus(StringBuilder builder, final String prefix) {
@@ -53,7 +52,6 @@ public class FunDeclaration extends Declaration {
     code.append("\n\n");
     code.append(MIPS.label(id));
 
-    // prologue
     MIPSResult stmtMIPS = statement.toMIPS(code, data, symbolTable, regAllocator);
 
     // special function that terminates the program when finished

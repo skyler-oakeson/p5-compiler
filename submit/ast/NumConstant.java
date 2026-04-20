@@ -4,6 +4,7 @@
  */
 package submit.ast;
 
+import submit.MIPS;
 import submit.MIPSResult;
 import submit.RegisterAllocator;
 import submit.SymbolTable;
@@ -27,7 +28,7 @@ public class NumConstant extends Expression {
   @Override
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
     String register = regAllocator.getT();
-    code.append("li " + register + " " + value + "\n");
+    code.append(MIPS.li(register, value));
     return MIPSResult.createRegisterResult(register, VarType.INT);
   }
 }

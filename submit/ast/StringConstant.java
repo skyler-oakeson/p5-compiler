@@ -4,6 +4,7 @@
  */
 package submit.ast;
 
+import submit.MIPS;
 import submit.MIPSResult;
 import submit.RegisterAllocator;
 import submit.SymbolTable;
@@ -22,9 +23,9 @@ public class StringConstant extends Expression {
 
   @Override
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
-    String addressLabel = symbolTable.getUniqueLabel();
-    data.append(addressLabel + ": .asciiz " + value);
-    return MIPSResult.createAddressResult(addressLabel, VarType.CHAR);
+    String label = regAllocator.getUniqueLabel();
+    data.append(MIPS.dataLabel(label, String.format(".asciiz %s", value)));
+    return MIPSResult.createAddressResult(label, VarType.CHAR);
   }
 
   public void toCminus(StringBuilder builder, final String prefix) {

@@ -16,11 +16,17 @@ public class SymbolInfo {
   // In the case of a function, type is the return type
   private final VarType type;
   private final boolean function;
+  private final boolean parameter;
 
-  public SymbolInfo(String id, VarType type, boolean function) {
+  public SymbolInfo(String id, VarType type, boolean function, boolean parameter) {
     this.id = id;
     this.type = type;
     this.function = function;
+    this.parameter = parameter;
+  }
+
+  public boolean isParameter() {
+    return this.parameter;
   }
 
   public VarType getType() {

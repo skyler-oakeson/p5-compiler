@@ -39,8 +39,8 @@ public class Mutable extends Expression {
 
     Integer offset = symbolTable.getOffset(id);
     String varRegister = regAllocator.getT();
-
-    VarType type = symbolTable.find(id).getType();
+    SymbolInfo symbol = symbolTable.find(id);
+    VarType type = symbol.getType();
 
     code.append("# -- loads " + id + "\n");
 

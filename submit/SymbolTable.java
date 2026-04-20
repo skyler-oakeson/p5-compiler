@@ -20,7 +20,7 @@ public class SymbolTable {
   private final HashMap<String, Integer> offsets;
   private SymbolTable parent;
   private final List<SymbolTable> children;
-  private final Integer label = 0;
+  private Integer label = 0;
 
   // size of all contained objects in bytes
   private Integer size = 0;
@@ -32,7 +32,7 @@ public class SymbolTable {
     children = new ArrayList<>();
 
     // Builtin functions
-    table.put("println", new SymbolInfo("println", null, true));
+    table.put("println", new SymbolInfo("println", null, true, false));
   }
 
   public void addSymbol(String id, SymbolInfo symbol) {
@@ -99,7 +99,4 @@ public class SymbolTable {
 
   public Integer getSize() { return size; }
 
-  public String getUniqueLabel() {
-    return "datalabel" + this.label.toString();
-  }
 }

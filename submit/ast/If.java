@@ -4,6 +4,11 @@
  */
 package submit.ast;
 
+import submit.MIPS;
+import submit.MIPSResult;
+import submit.RegisterAllocator;
+import submit.SymbolTable;
+
 /**
  *
  * @author edwajohn
@@ -40,5 +45,26 @@ public class If extends Statement {
       }
     }
 //    builder.append(prefix).append("}");
+  }
+
+  @Override
+  public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
+    String falseLabel = regAllocator.getUniqueLabel();
+
+    code.append("# -- evaluate if\n");
+    MIPSResult exprMIPS = expression.toMIPS(code, data, symbolTable, regAllocator);
+    String exprReg = exprMIPS.getRegister();
+
+    code.append(MIPS.beq(exprReg, "$zero", falseLabel));
+
+    MIPSResult trueResult = trueStatement.toMIPS(code, data, symbolTable, regAllocator);
+
+    code.append(MIPS.label(falseLabel));
+
+    if (falseStatement != null) {
+      MIPSResult falseResult = falseStatement.toMIPS(code, data, symbolTable, regAllocator);
+    }
+
+    return super.toMIPS(code, data, symbolTable, regAllocator);
   }
 }

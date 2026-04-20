@@ -47,37 +47,57 @@ public class Call extends Expression {
       return MIPSResult.createVoidResult();
     }
 
-    Integer totalOffset = regAllocator.getUsed().size() * 4 + 4;
-    Integer offset = totalOffset;
-
-    // make space for activation record
-    code.append(MIPS.addi(MIPS.STACKPOINTER, MIPS.STACKPOINTER, -totalOffset));
+    List<String> usedRegisters = regAllocator.getUsed();
+    if (!usedRegisters.contains("$ra")) {
+      usedRegisters.add("$ra");
+    }
+    Integer activationRecord = (usedRegisters.size() + args.size() + 1) * 4;
 
     // save $t0-9 registers
-    for (String reg: regAllocator.getUsed()) {
+    Integer offset = 0;
+    for (String reg: usedRegisters) {
       offset -= 4;
       code.append(MIPS.sw(reg, offset, MIPS.STACKPOINTER));
     }
 
-    // save $ra
-    code.append(MIPS.sw(MIPS.RETURNADDRESS, 0, MIPS.STACKPOINTER));
+    // return value
+    offset -= 4;
+    code.append("# -- return\n");
+
+    code.append("# -- params\n");
+    for (Expression arg: args) {
+      offset -= 4;
+      MIPSResult argMIPS = arg.toMIPS(code, data, symbolTable, regAllocator);
+      String reg = argMIPS.getRegister();
+      code.append(MIPS.sw(reg, offset, MIPS.STACKPOINTER));
+      regAllocator.clearAll();
+    }
+
+    // make space for activation record
+    code.append(MIPS.addi(MIPS.STACKPOINTER, MIPS.STACKPOINTER, -activationRecord));
 
     code.append(MIPS.jal(id));
 
 
-    // restore $t0-9 registers
-    offset = totalOffset;
-    for (String reg: regAllocator.getUsed()) {
+    // restore stackpointer
+    code.append(MIPS.addi(MIPS.STACKPOINTER, MIPS.STACKPOINTER, activationRecord));
+
+    // restore $t0-9 registers and $ra
+    offset = 0;
+    for (String reg: usedRegisters) {
       offset -= 4;
       code.append(MIPS.lw(reg, offset, MIPS.STACKPOINTER));
     }
 
-    // restore $ra
-    code.append(MIPS.lw(MIPS.RETURNADDRESS, 0, MIPS.STACKPOINTER));
+    VarType returnType = symbolTable.find(id).getType();
 
-    // restore stackpointer
-    code.append(MIPS.addi(MIPS.STACKPOINTER, MIPS.STACKPOINTER, totalOffset));
-
+    if (returnType != null) {
+      // grab return value
+      offset -= 4;
+      String returnReg = regAllocator.getT();
+      code.append(MIPS.lw(returnReg, offset, MIPS.STACKPOINTER));
+      return MIPSResult.createRegisterResult(returnReg, returnType);
+    };
 
     return MIPSResult.createVoidResult();
   }

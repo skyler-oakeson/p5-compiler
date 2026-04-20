@@ -45,21 +45,30 @@ public class BinaryOperator extends Expression {
     String rhsReg = rhsMIPS.getRegister();
     switch (type) {
       case EQ:
-        return super.toMIPS(code, data, symbolTable, regAllocator);
+        code.append(MIPS.seq(lhsReg, lhsReg, rhsReg));
+        return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
       case LE:
-        return super.toMIPS(code, data, symbolTable, regAllocator);
+        code.append(MIPS.sle(lhsReg, lhsReg, rhsReg));
+        return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
       case LT:
-        return super.toMIPS(code, data, symbolTable, regAllocator);
+        code.append(MIPS.slt(lhsReg, lhsReg, rhsReg));
+        return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
       case GE:
-        return super.toMIPS(code, data, symbolTable, regAllocator);
+        code.append(MIPS.sgt(lhsReg, lhsReg, rhsReg));
+        return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
       case GT:
-        return super.toMIPS(code, data, symbolTable, regAllocator);
+        code.append(MIPS.sge(lhsReg, lhsReg, rhsReg));
+        return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
       case NE:
-        return super.toMIPS(code, data, symbolTable, regAllocator);
+        code.append(MIPS.xor(lhsReg, lhsReg, rhsReg));
+        code.append(MIPS.slt(lhsReg, "$zero", lhsReg));
+        return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
       case OR:
-        return super.toMIPS(code, data, symbolTable, regAllocator);
+        code.append(MIPS.or(lhsReg, lhsReg, rhsReg));
+        return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
       case AND:
-        return super.toMIPS(code, data, symbolTable, regAllocator);
+        code.append(MIPS.and(lhsReg, lhsReg, rhsReg));
+        return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
       case MOD:
         return super.toMIPS(code, data, symbolTable, regAllocator);
       case PLUS:

@@ -19,6 +19,7 @@ public final class RegisterAllocator {
     private final boolean[] t = new boolean[10];
     private final boolean[] s = new boolean[8];
     private final Set<String> used = new HashSet<>();
+    private Integer label = 0;
 
     public RegisterAllocator() {
         clearAll();
@@ -122,5 +123,11 @@ public final class RegisterAllocator {
     public void clearAll() {
         Arrays.fill(t, false);
         Arrays.fill(s, false);
+    }
+
+    public String getUniqueLabel() {
+        String labelString = "datalabel" + this.label.toString();
+        this.label = this.label + 1;
+        return labelString;
     }
 }

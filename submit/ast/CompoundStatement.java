@@ -34,6 +34,10 @@ public class CompoundStatement extends Statement {
     builder.append(prefix).append("}\n");
   }
 
+  public SymbolTable getSymbolTable() {
+    return symbolTable;
+  }
+
   @Override
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
     Integer scopeOffset = this.symbolTable.getSize();
@@ -52,7 +56,6 @@ public class CompoundStatement extends Statement {
     code.append(MIPS.addi(MIPS.STACKPOINTER, MIPS.STACKPOINTER, scopeOffset));
     code.append("# -- exit scope\n");
 
-    regAllocator.clearAll();
 
     return super.toMIPS(code, data, symbolTable, regAllocator);
   }
