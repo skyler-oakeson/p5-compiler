@@ -51,6 +51,7 @@ public class CompoundStatement extends Statement {
 
     for (Statement s: statements) {
       s.toMIPS(code, data, this.symbolTable, regAllocator);
+      regAllocator.clearAll();
     }
 
     code.append(MIPS.addi(MIPS.STACKPOINTER, MIPS.STACKPOINTER, scopeOffset));

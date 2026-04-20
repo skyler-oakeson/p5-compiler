@@ -10,21 +10,21 @@ j main
 
 identity:
 # -- enter scope
-addi $sp, $sp 0
+addi $sp, $sp, 0
 # -- symbols in scope
 # println: null
 # -- save return
 # -- loads x
 lw $t0, 0($sp)
-sw $t0, 4($sp)
-addi $sp, $sp 0
+move $v0, $t0
+addi $sp, $sp, 0
 # -- exit scope
 jr $ra
 
 
 addf:
 # -- enter scope
-addi $sp, $sp 0
+addi $sp, $sp, 0
 # -- symbols in scope
 # println: null
 # -- save return
@@ -32,16 +32,16 @@ addi $sp, $sp 0
 lw $t0, 0($sp)
 # -- loads y
 lw $t1, 4($sp)
-add $t0, $t0 $t1
-sw $t0, 8($sp)
-addi $sp, $sp 0
+add $t0, $t0, $t1
+move $v0, $t0
+addi $sp, $sp, 0
 # -- exit scope
 jr $ra
 
 
 main:
 # -- enter scope
-addi $sp, $sp 0
+addi $sp, $sp, 0
 # -- symbols in scope
 # println: null
 # -- println
@@ -52,50 +52,40 @@ la $a0 newline
 li $v0, 4
 syscall
 # -- println
-sw $t0, -4($sp)
-sw $t1, -8($sp)
-sw $ra, -12($sp)
-# -- return
+sw $ra, -4($sp)
 # -- params
-li $t0 7
-sw $t0, -20($sp)
-addi $sp, $sp -20
+li $t0, 7
+sw $t0, -8($sp)
+addi $sp, $sp, -8
 jal identity
-addi $sp, $sp 20
-lw $t0, -4($sp)
-lw $t1, -8($sp)
-lw $ra, -12($sp)
-lw $t1, -16($sp)
-move $a0, $t1
+addi $sp, $sp, 8
+lw $ra, -4($sp)
+move $t0, $v0
+move $a0, $t0
 li $v0, 1
 syscall
 la $a0 newline
 li $v0, 4
 syscall
 # -- println
-sw $t0, -4($sp)
-sw $t1, -8($sp)
-sw $ra, -12($sp)
-# -- return
+sw $ra, -4($sp)
 # -- params
-li $t2 3
-sw $t2, -20($sp)
-li $t3 4
-sw $t3, -24($sp)
-addi $sp, $sp -24
+li $t0, 3
+sw $t0, -8($sp)
+li $t0, 4
+sw $t0, -12($sp)
+addi $sp, $sp, -12
 jal addf
-addi $sp, $sp 24
-lw $t0, -4($sp)
-lw $t1, -8($sp)
-lw $ra, -12($sp)
-lw $t4, -16($sp)
-move $a0, $t4
+addi $sp, $sp, 12
+lw $ra, -4($sp)
+move $t0, $v0
+move $a0, $t0
 li $v0, 1
 syscall
 la $a0 newline
 li $v0, 4
 syscall
-addi $sp, $sp 0
+addi $sp, $sp, 0
 # -- exit scope
 # -- exiting program -- 
 li $v0, 10

@@ -49,21 +49,25 @@ public class If extends Statement {
 
   @Override
   public MIPSResult toMIPS(StringBuilder code, StringBuilder data, SymbolTable symbolTable, RegisterAllocator regAllocator) {
-    String falseLabel = regAllocator.getUniqueLabel();
+    String trueLabel = regAllocator.getUniqueLabel();
+    String endLabel = regAllocator.getUniqueLabel();
 
     code.append("# -- evaluate if\n");
     MIPSResult exprMIPS = expression.toMIPS(code, data, symbolTable, regAllocator);
     String exprReg = exprMIPS.getRegister();
 
-    code.append(MIPS.beq(exprReg, "$zero", falseLabel));
-
-    MIPSResult trueResult = trueStatement.toMIPS(code, data, symbolTable, regAllocator);
-
-    code.append(MIPS.label(falseLabel));
+    code.append(MIPS.bne(exprReg, "$zero", trueLabel));
 
     if (falseStatement != null) {
       MIPSResult falseResult = falseStatement.toMIPS(code, data, symbolTable, regAllocator);
     }
+
+    code.append(MIPS.j(endLabel));
+
+    code.append(MIPS.label(trueLabel));
+    MIPSResult trueResult = trueStatement.toMIPS(code, data, symbolTable, regAllocator);
+
+    code.append(MIPS.label(endLabel));
 
     return super.toMIPS(code, data, symbolTable, regAllocator);
   }

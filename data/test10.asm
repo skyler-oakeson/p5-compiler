@@ -18,78 +18,59 @@ addi $sp, $sp, 0
 lw $t0, 0($sp)
 li $t1, 0
 seq $t0, $t0 $t1
-beq $t0, $zero datalabel0
-# -- save return
-li $t2, 1
-sw $t2, 4($sp)
+bne $t0, $zero datalabel0
+j datalabel1
 datalabel0:
+# -- save return
+li $t1, 1
+move $v0, $t1
+jr $ra
+datalabel1:
 # -- evaluate if
 # -- loads i
-lw $t3, 0($sp)
-li $t4, 1
-seq $t3, $t3 $t4
-beq $t3, $zero datalabel1
+lw $t0, 0($sp)
+li $t1, 1
+seq $t0, $t0 $t1
+bne $t0, $zero datalabel2
+j datalabel3
+datalabel2:
 # -- save return
-li $t5, 1
-sw $t5, 4($sp)
-datalabel1:
+li $t1, 1
+move $v0, $t1
+jr $ra
+datalabel3:
 # -- save return
-sw $t0, -4($sp)
-sw $t1, -8($sp)
-sw $t2, -12($sp)
-sw $t3, -16($sp)
-sw $t4, -20($sp)
-sw $t5, -24($sp)
-sw $ra, -28($sp)
-# -- return
+sw $ra, -4($sp)
 # -- params
 # -- loads i
-lw $t6, 0($sp)
-li $t7, 1
-sub $t6, $t6, $t7
-sw $t6, -36($sp)
-addi $sp, $sp, -36
+lw $t0, 0($sp)
+li $t1, 1
+sub $t0, $t0, $t1
+sw $t0, -8($sp)
+addi $sp, $sp, -8
 jal fib
-addi $sp, $sp, 36
-lw $t0, -4($sp)
-lw $t1, -8($sp)
-lw $t2, -12($sp)
-lw $t3, -16($sp)
-lw $t4, -20($sp)
-lw $t5, -24($sp)
-lw $ra, -28($sp)
-lw $t0, -32($sp)
+addi $sp, $sp, 8
+lw $ra, -4($sp)
+move $t1, $v0
 sw $t0, -4($sp)
 sw $t1, -8($sp)
-sw $t2, -12($sp)
-sw $t3, -16($sp)
-sw $t4, -20($sp)
-sw $t5, -24($sp)
-sw $t6, -28($sp)
-sw $t7, -32($sp)
-sw $ra, -36($sp)
-# -- return
+sw $ra, -12($sp)
 # -- params
 # -- loads i
-lw $t1, 0($sp)
-li $t2, 2
-sub $t1, $t1, $t2
-sw $t1, -44($sp)
-addi $sp, $sp, -44
+lw $t2, 0($sp)
+li $t3, 2
+sub $t2, $t2, $t3
+sw $t2, -16($sp)
+addi $sp, $sp, -16
 jal fib
-addi $sp, $sp, 44
+addi $sp, $sp, 16
 lw $t0, -4($sp)
 lw $t1, -8($sp)
-lw $t2, -12($sp)
-lw $t3, -16($sp)
-lw $t4, -20($sp)
-lw $t5, -24($sp)
-lw $t6, -28($sp)
-lw $t7, -32($sp)
-lw $ra, -36($sp)
-lw $t0, -40($sp)
-add $t0, $t0, $t0
-sw $t0, 4($sp)
+lw $ra, -12($sp)
+move $t3, $v0
+add $t1, $t1, $t3
+move $v0, $t1
+jr $ra
 addi $sp, $sp, 0
 # -- exit scope
 jr $ra
@@ -101,370 +82,183 @@ addi $sp, $sp, 0
 # -- symbols in scope
 # println: null
 # -- println
-la $a0 datalabel2
+la $a0 datalabel4
 li $v0, 4
 syscall
 la $a0 newline
 li $v0, 4
 syscall
 # -- println
-sw $t0, -4($sp)
-sw $t1, -8($sp)
-sw $t2, -12($sp)
-sw $t3, -16($sp)
-sw $t4, -20($sp)
-sw $t5, -24($sp)
-sw $t6, -28($sp)
-sw $t7, -32($sp)
-sw $ra, -36($sp)
-# -- return
+sw $ra, -4($sp)
 # -- params
-li $t1, 0
-sw $t1, -44($sp)
-addi $sp, $sp, -44
+li $t0, 0
+sw $t0, -8($sp)
+addi $sp, $sp, -8
 jal fib
-addi $sp, $sp, 44
-lw $t0, -4($sp)
-lw $t1, -8($sp)
-lw $t2, -12($sp)
-lw $t3, -16($sp)
-lw $t4, -20($sp)
-lw $t5, -24($sp)
-lw $t6, -28($sp)
-lw $t7, -32($sp)
-lw $ra, -36($sp)
-lw $t0, -40($sp)
-move $a0, $t0
+addi $sp, $sp, 8
+lw $ra, -4($sp)
+move $t1, $v0
+move $a0, $t1
 li $v0, 1
 syscall
 la $a0 newline
 li $v0, 4
 syscall
 # -- println
-sw $t0, -4($sp)
-sw $t1, -8($sp)
-sw $t2, -12($sp)
-sw $t3, -16($sp)
-sw $t4, -20($sp)
-sw $t5, -24($sp)
-sw $t6, -28($sp)
-sw $t7, -32($sp)
-sw $ra, -36($sp)
-# -- return
+sw $ra, -4($sp)
 # -- params
-li $t1, 1
-sw $t1, -44($sp)
-addi $sp, $sp, -44
+li $t0, 1
+sw $t0, -8($sp)
+addi $sp, $sp, -8
 jal fib
-addi $sp, $sp, 44
-lw $t0, -4($sp)
-lw $t1, -8($sp)
-lw $t2, -12($sp)
-lw $t3, -16($sp)
-lw $t4, -20($sp)
-lw $t5, -24($sp)
-lw $t6, -28($sp)
-lw $t7, -32($sp)
-lw $ra, -36($sp)
-lw $t0, -40($sp)
-move $a0, $t0
+addi $sp, $sp, 8
+lw $ra, -4($sp)
+move $t1, $v0
+move $a0, $t1
 li $v0, 1
 syscall
 la $a0 newline
 li $v0, 4
 syscall
 # -- println
-sw $t0, -4($sp)
-sw $t1, -8($sp)
-sw $t2, -12($sp)
-sw $t3, -16($sp)
-sw $t4, -20($sp)
-sw $t5, -24($sp)
-sw $t6, -28($sp)
-sw $t7, -32($sp)
-sw $ra, -36($sp)
-# -- return
+sw $ra, -4($sp)
 # -- params
-li $t1, 2
-sw $t1, -44($sp)
-addi $sp, $sp, -44
+li $t0, 2
+sw $t0, -8($sp)
+addi $sp, $sp, -8
 jal fib
-addi $sp, $sp, 44
-lw $t0, -4($sp)
-lw $t1, -8($sp)
-lw $t2, -12($sp)
-lw $t3, -16($sp)
-lw $t4, -20($sp)
-lw $t5, -24($sp)
-lw $t6, -28($sp)
-lw $t7, -32($sp)
-lw $ra, -36($sp)
-lw $t0, -40($sp)
-move $a0, $t0
+addi $sp, $sp, 8
+lw $ra, -4($sp)
+move $t1, $v0
+move $a0, $t1
 li $v0, 1
 syscall
 la $a0 newline
 li $v0, 4
 syscall
 # -- println
-sw $t0, -4($sp)
-sw $t1, -8($sp)
-sw $t2, -12($sp)
-sw $t3, -16($sp)
-sw $t4, -20($sp)
-sw $t5, -24($sp)
-sw $t6, -28($sp)
-sw $t7, -32($sp)
-sw $ra, -36($sp)
-# -- return
+sw $ra, -4($sp)
 # -- params
-li $t1, 3
-sw $t1, -44($sp)
-addi $sp, $sp, -44
+li $t0, 3
+sw $t0, -8($sp)
+addi $sp, $sp, -8
 jal fib
-addi $sp, $sp, 44
-lw $t0, -4($sp)
-lw $t1, -8($sp)
-lw $t2, -12($sp)
-lw $t3, -16($sp)
-lw $t4, -20($sp)
-lw $t5, -24($sp)
-lw $t6, -28($sp)
-lw $t7, -32($sp)
-lw $ra, -36($sp)
-lw $t0, -40($sp)
-move $a0, $t0
+addi $sp, $sp, 8
+lw $ra, -4($sp)
+move $t1, $v0
+move $a0, $t1
 li $v0, 1
 syscall
 la $a0 newline
 li $v0, 4
 syscall
 # -- println
-sw $t0, -4($sp)
-sw $t1, -8($sp)
-sw $t2, -12($sp)
-sw $t3, -16($sp)
-sw $t4, -20($sp)
-sw $t5, -24($sp)
-sw $t6, -28($sp)
-sw $t7, -32($sp)
-sw $ra, -36($sp)
-# -- return
+sw $ra, -4($sp)
 # -- params
-li $t1, 4
-sw $t1, -44($sp)
-addi $sp, $sp, -44
+li $t0, 4
+sw $t0, -8($sp)
+addi $sp, $sp, -8
 jal fib
-addi $sp, $sp, 44
-lw $t0, -4($sp)
-lw $t1, -8($sp)
-lw $t2, -12($sp)
-lw $t3, -16($sp)
-lw $t4, -20($sp)
-lw $t5, -24($sp)
-lw $t6, -28($sp)
-lw $t7, -32($sp)
-lw $ra, -36($sp)
-lw $t0, -40($sp)
-move $a0, $t0
+addi $sp, $sp, 8
+lw $ra, -4($sp)
+move $t1, $v0
+move $a0, $t1
 li $v0, 1
 syscall
 la $a0 newline
 li $v0, 4
 syscall
 # -- println
-sw $t0, -4($sp)
-sw $t1, -8($sp)
-sw $t2, -12($sp)
-sw $t3, -16($sp)
-sw $t4, -20($sp)
-sw $t5, -24($sp)
-sw $t6, -28($sp)
-sw $t7, -32($sp)
-sw $ra, -36($sp)
-# -- return
+sw $ra, -4($sp)
 # -- params
-li $t1, 5
-sw $t1, -44($sp)
-addi $sp, $sp, -44
+li $t0, 5
+sw $t0, -8($sp)
+addi $sp, $sp, -8
 jal fib
-addi $sp, $sp, 44
-lw $t0, -4($sp)
-lw $t1, -8($sp)
-lw $t2, -12($sp)
-lw $t3, -16($sp)
-lw $t4, -20($sp)
-lw $t5, -24($sp)
-lw $t6, -28($sp)
-lw $t7, -32($sp)
-lw $ra, -36($sp)
-lw $t0, -40($sp)
-move $a0, $t0
+addi $sp, $sp, 8
+lw $ra, -4($sp)
+move $t1, $v0
+move $a0, $t1
 li $v0, 1
 syscall
 la $a0 newline
 li $v0, 4
 syscall
 # -- println
-sw $t0, -4($sp)
-sw $t1, -8($sp)
-sw $t2, -12($sp)
-sw $t3, -16($sp)
-sw $t4, -20($sp)
-sw $t5, -24($sp)
-sw $t6, -28($sp)
-sw $t7, -32($sp)
-sw $ra, -36($sp)
-# -- return
+sw $ra, -4($sp)
 # -- params
-li $t1, 6
-sw $t1, -44($sp)
-addi $sp, $sp, -44
+li $t0, 6
+sw $t0, -8($sp)
+addi $sp, $sp, -8
 jal fib
-addi $sp, $sp, 44
-lw $t0, -4($sp)
-lw $t1, -8($sp)
-lw $t2, -12($sp)
-lw $t3, -16($sp)
-lw $t4, -20($sp)
-lw $t5, -24($sp)
-lw $t6, -28($sp)
-lw $t7, -32($sp)
-lw $ra, -36($sp)
-lw $t0, -40($sp)
-move $a0, $t0
+addi $sp, $sp, 8
+lw $ra, -4($sp)
+move $t1, $v0
+move $a0, $t1
 li $v0, 1
 syscall
 la $a0 newline
 li $v0, 4
 syscall
 # -- println
-sw $t0, -4($sp)
-sw $t1, -8($sp)
-sw $t2, -12($sp)
-sw $t3, -16($sp)
-sw $t4, -20($sp)
-sw $t5, -24($sp)
-sw $t6, -28($sp)
-sw $t7, -32($sp)
-sw $ra, -36($sp)
-# -- return
+sw $ra, -4($sp)
 # -- params
-li $t1, 7
-sw $t1, -44($sp)
-addi $sp, $sp, -44
+li $t0, 7
+sw $t0, -8($sp)
+addi $sp, $sp, -8
 jal fib
-addi $sp, $sp, 44
-lw $t0, -4($sp)
-lw $t1, -8($sp)
-lw $t2, -12($sp)
-lw $t3, -16($sp)
-lw $t4, -20($sp)
-lw $t5, -24($sp)
-lw $t6, -28($sp)
-lw $t7, -32($sp)
-lw $ra, -36($sp)
-lw $t0, -40($sp)
-move $a0, $t0
+addi $sp, $sp, 8
+lw $ra, -4($sp)
+move $t1, $v0
+move $a0, $t1
 li $v0, 1
 syscall
 la $a0 newline
 li $v0, 4
 syscall
 # -- println
-sw $t0, -4($sp)
-sw $t1, -8($sp)
-sw $t2, -12($sp)
-sw $t3, -16($sp)
-sw $t4, -20($sp)
-sw $t5, -24($sp)
-sw $t6, -28($sp)
-sw $t7, -32($sp)
-sw $ra, -36($sp)
-# -- return
+sw $ra, -4($sp)
 # -- params
-li $t1, 8
-sw $t1, -44($sp)
-addi $sp, $sp, -44
+li $t0, 8
+sw $t0, -8($sp)
+addi $sp, $sp, -8
 jal fib
-addi $sp, $sp, 44
-lw $t0, -4($sp)
-lw $t1, -8($sp)
-lw $t2, -12($sp)
-lw $t3, -16($sp)
-lw $t4, -20($sp)
-lw $t5, -24($sp)
-lw $t6, -28($sp)
-lw $t7, -32($sp)
-lw $ra, -36($sp)
-lw $t0, -40($sp)
-move $a0, $t0
+addi $sp, $sp, 8
+lw $ra, -4($sp)
+move $t1, $v0
+move $a0, $t1
 li $v0, 1
 syscall
 la $a0 newline
 li $v0, 4
 syscall
 # -- println
-sw $t0, -4($sp)
-sw $t1, -8($sp)
-sw $t2, -12($sp)
-sw $t3, -16($sp)
-sw $t4, -20($sp)
-sw $t5, -24($sp)
-sw $t6, -28($sp)
-sw $t7, -32($sp)
-sw $ra, -36($sp)
-# -- return
+sw $ra, -4($sp)
 # -- params
-li $t1, 9
-sw $t1, -44($sp)
-addi $sp, $sp, -44
+li $t0, 9
+sw $t0, -8($sp)
+addi $sp, $sp, -8
 jal fib
-addi $sp, $sp, 44
-lw $t0, -4($sp)
-lw $t1, -8($sp)
-lw $t2, -12($sp)
-lw $t3, -16($sp)
-lw $t4, -20($sp)
-lw $t5, -24($sp)
-lw $t6, -28($sp)
-lw $t7, -32($sp)
-lw $ra, -36($sp)
-lw $t0, -40($sp)
-move $a0, $t0
+addi $sp, $sp, 8
+lw $ra, -4($sp)
+move $t1, $v0
+move $a0, $t1
 li $v0, 1
 syscall
 la $a0 newline
 li $v0, 4
 syscall
 # -- println
-sw $t0, -4($sp)
-sw $t1, -8($sp)
-sw $t2, -12($sp)
-sw $t3, -16($sp)
-sw $t4, -20($sp)
-sw $t5, -24($sp)
-sw $t6, -28($sp)
-sw $t7, -32($sp)
-sw $ra, -36($sp)
-# -- return
+sw $ra, -4($sp)
 # -- params
-li $t1, 10
-sw $t1, -44($sp)
-addi $sp, $sp, -44
+li $t0, 10
+sw $t0, -8($sp)
+addi $sp, $sp, -8
 jal fib
-addi $sp, $sp, 44
-lw $t0, -4($sp)
-lw $t1, -8($sp)
-lw $t2, -12($sp)
-lw $t3, -16($sp)
-lw $t4, -20($sp)
-lw $t5, -24($sp)
-lw $t6, -28($sp)
-lw $t7, -32($sp)
-lw $ra, -36($sp)
-lw $t0, -40($sp)
-move $a0, $t0
+addi $sp, $sp, 8
+lw $ra, -4($sp)
+move $t1, $v0
+move $a0, $t1
 li $v0, 1
 syscall
 la $a0 newline
@@ -481,4 +275,4 @@ syscall
 .data
 
 newline: .asciiz "\n"
-datalabel2: .asciiz "This program prints the first 11 numbers of the Fibonacci sequence"
+datalabel4: .asciiz "This program prints the first 11 numbers of the Fibonacci sequence"

@@ -51,7 +51,7 @@ public class Call extends Expression {
     if (!usedRegisters.contains("$ra")) {
       usedRegisters.add("$ra");
     }
-    Integer activationRecord = (usedRegisters.size() + args.size() + 1) * 4;
+    Integer activationRecord = (usedRegisters.size() + args.size()) * 4;
 
     // save $t0-9 registers
     Integer offset = 0;
@@ -60,17 +60,12 @@ public class Call extends Expression {
       code.append(MIPS.sw(reg, offset, MIPS.STACKPOINTER));
     }
 
-    // return value
-    offset -= 4;
-    code.append("# -- return\n");
-
     code.append("# -- params\n");
     for (Expression arg: args) {
       offset -= 4;
       MIPSResult argMIPS = arg.toMIPS(code, data, symbolTable, regAllocator);
       String reg = argMIPS.getRegister();
       code.append(MIPS.sw(reg, offset, MIPS.STACKPOINTER));
-      regAllocator.clearAll();
     }
 
     // make space for activation record
@@ -92,10 +87,8 @@ public class Call extends Expression {
     VarType returnType = symbolTable.find(id).getType();
 
     if (returnType != null) {
-      // grab return value
-      offset -= 4;
       String returnReg = regAllocator.getT();
-      code.append(MIPS.lw(returnReg, offset, MIPS.STACKPOINTER));
+      code.append(MIPS.move(returnReg, "$v0"));
       return MIPSResult.createRegisterResult(returnReg, returnType);
     };
 

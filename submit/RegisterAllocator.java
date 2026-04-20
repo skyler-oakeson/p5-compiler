@@ -113,8 +113,10 @@ public final class RegisterAllocator {
     public void clear(String reg) {
         if (reg.charAt(1) == 's') {
             s[Integer.parseInt(reg.substring(2))] = false;
+            used.remove(reg);
         } else if (reg.charAt(1) == 't') {
             t[Integer.parseInt(reg.substring(2))] = false;
+            used.remove(reg);
         } else {
             throw new RuntimeException("Unexpected register in clear");
         }
@@ -123,6 +125,7 @@ public final class RegisterAllocator {
     public void clearAll() {
         Arrays.fill(t, false);
         Arrays.fill(s, false);
+        used.clear();
     }
 
     public String getUniqueLabel() {

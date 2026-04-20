@@ -29,33 +29,15 @@ syscall
 lw $t0, 0($sp)
 li $t1, 4
 slt $t0, $t0 $t1
-beq $t0, $zero datalabel1
-# -- enter scope
-addi $sp, $sp, 0
-# -- symbols in scope
-# println: null
-# -- println
-la $a0 datalabel2
-li $v0, 4
-syscall
-la $a0 newline
-li $v0, 4
-syscall
-addi $sp, $sp, 0
-# -- exit scope
+bne $t0, $zero datalabel1
+j datalabel2
 datalabel1:
-# -- evaluate if
-# -- loads a
-lw $t0, 0($sp)
-li $t1, 4
-sge $t0, $t0 $t1
-beq $t0, $zero datalabel3
 # -- enter scope
 addi $sp, $sp, 0
 # -- symbols in scope
 # println: null
 # -- println
-la $a0 datalabel4
+la $a0 datalabel3
 li $v0, 4
 syscall
 la $a0 newline
@@ -63,13 +45,15 @@ li $v0, 4
 syscall
 addi $sp, $sp, 0
 # -- exit scope
-datalabel3:
+datalabel2:
 # -- evaluate if
 # -- loads a
 lw $t0, 0($sp)
 li $t1, 4
 sge $t0, $t0 $t1
-beq $t0, $zero datalabel5
+bne $t0, $zero datalabel4
+j datalabel5
+datalabel4:
 # -- enter scope
 addi $sp, $sp, 0
 # -- symbols in scope
@@ -84,25 +68,12 @@ syscall
 addi $sp, $sp, 0
 # -- exit scope
 datalabel5:
-# -- enter scope
-addi $sp, $sp, 0
-# -- symbols in scope
-# println: null
-# -- println
-la $a0 datalabel7
-li $v0, 4
-syscall
-la $a0 newline
-li $v0, 4
-syscall
-addi $sp, $sp, 0
-# -- exit scope
 # -- evaluate if
 # -- loads a
 lw $t0, 0($sp)
-li $t1, 3
-sle $t0, $t0 $t1
-beq $t0, $zero datalabel8
+li $t1, 4
+sge $t0, $t0 $t1
+bne $t0, $zero datalabel7
 # -- enter scope
 addi $sp, $sp, 0
 # -- symbols in scope
@@ -116,19 +87,14 @@ li $v0, 4
 syscall
 addi $sp, $sp, 0
 # -- exit scope
-datalabel8:
-# -- evaluate if
-# -- loads a
-lw $t0, 0($sp)
-li $t1, 3
-seq $t0, $t0 $t1
-beq $t0, $zero datalabel10
+j datalabel8
+datalabel7:
 # -- enter scope
 addi $sp, $sp, 0
 # -- symbols in scope
 # println: null
 # -- println
-la $a0 datalabel11
+la $a0 datalabel10
 li $v0, 4
 syscall
 la $a0 newline
@@ -136,13 +102,15 @@ li $v0, 4
 syscall
 addi $sp, $sp, 0
 # -- exit scope
-datalabel10:
+datalabel8:
 # -- evaluate if
 # -- loads a
 lw $t0, 0($sp)
-li $t1, 4
-sgt $t0, $t0 $t1
-beq $t0, $zero datalabel12
+li $t1, 3
+sle $t0, $t0 $t1
+bne $t0, $zero datalabel11
+j datalabel12
+datalabel11:
 # -- enter scope
 addi $sp, $sp, 0
 # -- symbols in scope
@@ -157,12 +125,20 @@ syscall
 addi $sp, $sp, 0
 # -- exit scope
 datalabel12:
+# -- evaluate if
+# -- loads a
+lw $t0, 0($sp)
+li $t1, 3
+seq $t0, $t0 $t1
+bne $t0, $zero datalabel14
+j datalabel15
+datalabel14:
 # -- enter scope
 addi $sp, $sp, 0
 # -- symbols in scope
 # println: null
 # -- println
-la $a0 datalabel14
+la $a0 datalabel16
 li $v0, 4
 syscall
 la $a0 newline
@@ -170,6 +146,42 @@ li $v0, 4
 syscall
 addi $sp, $sp, 0
 # -- exit scope
+datalabel15:
+# -- evaluate if
+# -- loads a
+lw $t0, 0($sp)
+li $t1, 4
+sgt $t0, $t0 $t1
+bne $t0, $zero datalabel17
+# -- enter scope
+addi $sp, $sp, 0
+# -- symbols in scope
+# println: null
+# -- println
+la $a0 datalabel19
+li $v0, 4
+syscall
+la $a0 newline
+li $v0, 4
+syscall
+addi $sp, $sp, 0
+# -- exit scope
+j datalabel18
+datalabel17:
+# -- enter scope
+addi $sp, $sp, 0
+# -- symbols in scope
+# println: null
+# -- println
+la $a0 datalabel20
+li $v0, 4
+syscall
+la $a0 newline
+li $v0, 4
+syscall
+addi $sp, $sp, 0
+# -- exit scope
+datalabel18:
 addi $sp, $sp, 4
 # -- exit scope
 # -- exiting program -- 
@@ -182,11 +194,11 @@ syscall
 
 newline: .asciiz "\n"
 datalabel0: .asciiz "This program prints [1..5] correct."
-datalabel2: .asciiz "1 correct"
-datalabel4: .asciiz "2 not correct"
+datalabel3: .asciiz "1 correct"
 datalabel6: .asciiz "2 not correct"
-datalabel7: .asciiz "2 correct"
-datalabel9: .asciiz "3 correct"
-datalabel11: .asciiz "4 correct"
-datalabel13: .asciiz "5 not correct"
-datalabel14: .asciiz "5 correct"
+datalabel9: .asciiz "2 correct"
+datalabel10: .asciiz "2 not correct"
+datalabel13: .asciiz "3 correct"
+datalabel16: .asciiz "4 correct"
+datalabel19: .asciiz "5 correct"
+datalabel20: .asciiz "5 not correct"

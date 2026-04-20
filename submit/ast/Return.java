@@ -38,8 +38,8 @@ public class Return extends Statement {
     code.append("# -- save return\n");
     MIPSResult result = expr.toMIPS(code, data, symbolTable, regAllocator);
     String resultReg = result.getRegister();
-    Integer offset = symbolTable.getOffset("return");
-    code.append(MIPS.sw(resultReg, offset, MIPS.STACKPOINTER));
+    code.append(MIPS.move("$v0", resultReg));
+    code.append(MIPS.jr(MIPS.RETURNADDRESS));
 
     return super.toMIPS(code, data, symbolTable, regAllocator);
   }

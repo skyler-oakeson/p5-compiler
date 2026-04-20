@@ -114,4 +114,7 @@ public  class MIPS {
         return String.format("bne %s, %s %s\n", operandReg1, operandReg2, jumpLoc);
     }
 
+    public static String j(String address) {
+        return String.format("j %s\n", address);
+    }
 }

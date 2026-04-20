@@ -46,46 +46,58 @@ public class BinaryOperator extends Expression {
     switch (type) {
       case EQ:
         code.append(MIPS.seq(lhsReg, lhsReg, rhsReg));
+        regAllocator.clear(rhsReg);
         return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
       case LE:
         code.append(MIPS.sle(lhsReg, lhsReg, rhsReg));
+        regAllocator.clear(rhsReg);
         return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
       case LT:
         code.append(MIPS.slt(lhsReg, lhsReg, rhsReg));
+        regAllocator.clear(rhsReg);
         return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
       case GE:
         code.append(MIPS.sgt(lhsReg, lhsReg, rhsReg));
+        regAllocator.clear(rhsReg);
         return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
       case GT:
         code.append(MIPS.sge(lhsReg, lhsReg, rhsReg));
+        regAllocator.clear(rhsReg);
         return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
       case NE:
         code.append(MIPS.xor(lhsReg, lhsReg, rhsReg));
         code.append(MIPS.slt(lhsReg, "$zero", lhsReg));
+        regAllocator.clear(rhsReg);
         return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
       case OR:
         code.append(MIPS.or(lhsReg, lhsReg, rhsReg));
+        regAllocator.clear(rhsReg);
         return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
       case AND:
         code.append(MIPS.and(lhsReg, lhsReg, rhsReg));
+        regAllocator.clear(rhsReg);
         return MIPSResult.createRegisterResult(lhsReg, VarType.BOOL);
       case MOD:
         return super.toMIPS(code, data, symbolTable, regAllocator);
       case PLUS:
         code.append(MIPS.add(lhsReg, lhsReg, rhsReg));
+        regAllocator.clear(rhsReg);
         return MIPSResult.createRegisterResult(lhsReg, VarType.INT);
       case MINUS:
         code.append(MIPS.sub(lhsReg, lhsReg, rhsReg));
+        regAllocator.clear(rhsReg);
         return MIPSResult.createRegisterResult(lhsReg, VarType.INT);
       case TIMES:
         // only supports the 32 least significant bits
         code.append(MIPS.mult(lhsReg, rhsReg));
         code.append(MIPS.mflo(lhsReg));
+        regAllocator.clear(rhsReg);
         return MIPSResult.createRegisterResult(lhsReg, VarType.INT);
       case DIVIDE:
         // only supports the quotient
         code.append(MIPS.div(lhsReg, rhsReg));
         code.append(MIPS.mflo(lhsReg));
+        regAllocator.clear(rhsReg);
         return MIPSResult.createRegisterResult(lhsMIPS.getRegister(), VarType.INT);
       default:
     }
